@@ -13,13 +13,13 @@ for i = 2:size(frames,3)
     rects(:,i) = [rects(1,i-1)+dp_x,rects(2,i-1)+dp_y,rects(3,i-1)+dp_x,rects(4,i-1)+dp_y]';
 end
 
-% for i = 1:size(frames,3)
-%     imshow(frames(:,:,i));
-%     hold on
-%     rectangle('Position',[rects(1,i) rects(2,i) rect(3)-rect(1) rect(4)-rect(2)])
-%     hold off
-%     pause(0.001)
-% end
+for i = 1:size(frames,3)
+    imshow(frames(:,:,i));
+    hold on
+    rectangle('Position',[rects(1,i) rects(2,i) rect(3)-rect(1) rect(4)-rect(2)])
+    hold off
+    pause(0.001)
+end
 
 rects=rects';
 
