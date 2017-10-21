@@ -7,7 +7,7 @@ T = It;%%(rect(2):rect(4),rect(1):rect(3)); % create a template based on It. Upd
 
 [x,y,~]=size(It);
 
-% crop both images
+%c
 
 % [xt,yt,~]=size(T);
 p = zeros(6,1);
