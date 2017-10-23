@@ -3,11 +3,16 @@ function M = LucasKanadeAffine(It, It1)
 % input - image at time t, image at t+1 
 % output - M affine transformation matrix
 % rect = uint16(rect); % converting to integers so it doesn't complain
-T = It;%%(rect(2):rect(4),rect(1):rect(3)); % create a template based on It. Updates every frame
+% T = It(rect(2):rect(4),rect(1):rect(3)); % create a template based on It. Updates every frame
+T = It;
+% band = .2;
 
 [x,y,~]=size(It);
-
+% rect = [floor(band/2*y);floor(band/2*x);ceil((1-(band/2))*y);ceil((1-(band/2))*x)];
 % crop both images
+% T = It(rect(2):rect(4),rect(1):rect(3)); % create a template based on It. Updates every frame
+% It1 = It1(rect(2):rect(4),rect(1):rect(3)); 
+% [xt,yt,~]=size(T);
 
 % [xt,yt,~]=size(T);
 p = zeros(6,1);
@@ -34,7 +39,7 @@ while metric_difference>eps
 %     I_w_crop = I_w(rect(2):rect(4),rect(1):rect(3));
     
     % compute error image
-    bc = T-I_w;
+    bc = T-I_w;%_crop;
     bc_col = reshape(bc,[x*y,1]);
     
     % warp gradient delI with W(x,p)
@@ -43,9 +48,9 @@ while metric_difference>eps
     delIy_w = interp2(It1y,Uq,Vq);
 %     delIy_w_crop = delIy_w(rect(2):rect(4),rect(1):rect(3));
     delIcol = [reshape(delIx_w,[x*y,1]) reshape(delIy_w,[x*y,1])];
+%     delIcol_crop = [reshape(delIx_w_crop,[xt*yt,1]) reshape(delIy_w_crop,[xt*yt,1])];
     
     % evaluate Jacobian at (x,p)
-%     J = [1 0;0 1];
     for i = 1:length(delIcol)
         J(:,:,i) = [coords(i,2) 0 coords(i,1) 0 1 0; 0 coords(i,2) 0 coords(i,1) 0 1];
         A(i,:) = delIcol(i,:)*J(:,:,i);
