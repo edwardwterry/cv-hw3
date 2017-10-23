@@ -19,3 +19,18 @@ Jrow2 =  circshift(Jrow1,[0,1]);
 row_interleave = reshape([Jrow1(:) Jrow2(:)]',2*size(Jrow1,1), []);
 
 test = col_interleave*row_interleave;
+
+
+    %     delIfirstCol = sparse(diag(delIcol(:,1)));
+    %     delIsecondCol = diag(delIcol(:,2));
+    %
+    %     delIcol_sparse = reshape([delIfirstCol(:) delIsecondCol(:)]',2*size(delIfirstCol,1), [])';
+    % %     delIcol_sparse = reshape([diag(delIcol(:,1)) diag(delIcol(:,2))]',2*size(diag(delIcol(:,1)),1), [])';
+    %
+    %     fun = @(x,y) [x zeros(length(x),1) y zeros(length(x),1) ones(length(x),1) zeros(length(x),1)];
+    %     Jrow1 = fun(coords(:,1),coords(:,2));
+    %     Jrow2 = circshift(Jrow1,[0,1]);
+    %
+    %     J_vect = reshape([Jrow1(:) Jrow2(:)]',2*size(Jrow1,1), []);
+    %     A = delIcol_sparse*J_vect;
+    %     test = col_interleave*row_interleave;

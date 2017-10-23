@@ -29,9 +29,9 @@ i = 1;
 metric = 1;
 metric_difference = 1;
 
-    for i = 1:(x*y)
-        J(:,:,i) = [coords(i,2) 0 coords(i,1) 0 1 0; 0 coords(i,2) 0 coords(i,1) 0 1];
-    end
+for i = 1:(x*y)
+    J(:,:,i) = [coords(i,2) coords(i,1) 1 0 0 0; 0 0 0 coords(i,2) coords(i,1) 1];
+end
 A = zeros(length(coords),6);
 while metric_difference>eps
     % warp I with W(x,p) to compute I(W(x,p))
@@ -45,39 +45,25 @@ while metric_difference>eps
     % compute error image
     bc = T-I_w;%_crop;
     bc_col = reshape(bc,[x*y,1]);
-    
+    bc_col(isnan(bc_col))=0;
+
     % warp gradient delI with W(x,p)
     delIx_w = interp2(It1x,Uq,Vq);
     %     delIx_w_crop = delIx_w(rect(2):rect(4),rect(1):rect(3));
     delIy_w = interp2(It1y,Uq,Vq);
     %     delIy_w_crop = delIy_w(rect(2):rect(4),rect(1):rect(3));
     delIcol = [reshape(delIx_w,[x*y,1]) reshape(delIy_w,[x*y,1])];
+    delIcol(isnan(delIcol))=0;
     delIstack = reshape(delIcol,[1,2,76800]);
-%     delIcol_crop = [reshape(delIx_w_crop,[xt*yt,1]) reshape(delIy_w_crop,[xt*yt,1])];
+    %     delIcol_crop = [reshape(delIx_w_crop,[xt*yt,1]) reshape(delIy_w_crop,[xt*yt,1])];
     
-    % evaluate Jacobian at (x,p)
-        
-%     delIfirstCol = sparse(diag(delIcol(:,1)));
-%     delIsecondCol = diag(delIcol(:,2));
-%     
-%     delIcol_sparse = reshape([delIfirstCol(:) delIsecondCol(:)]',2*size(delIfirstCol,1), [])';
-% %     delIcol_sparse = reshape([diag(delIcol(:,1)) diag(delIcol(:,2))]',2*size(diag(delIcol(:,1)),1), [])';
-%     
-%     fun = @(x,y) [x zeros(length(x),1) y zeros(length(x),1) ones(length(x),1) zeros(length(x),1)];
-%     Jrow1 = fun(coords(:,1),coords(:,2));
-%     Jrow2 = circshift(Jrow1,[0,1]);
-%      
-%     J_vect = reshape([Jrow1(:) Jrow2(:)]',2*size(Jrow1,1), []);
-%     A = delIcol_sparse*J_vect;
-%     test = col_interleave*row_interleave;
-    for i = 1:length(delIcol)
-%         J(:,:,i) = [coords(i,2) 0 coords(i,1) 0 1 0; 0 coords(i,2) 0 coords(i,1) 0 1];
-        A(i,:) = delIstack(1,:,i)*J(:,:,i);
-    end
-    %             J = [x 0 y 0 1 0; 0 x 0 y 0 1];
+    % evaluate Jacobian at (x,p) (done above)
     
     % compute steepest descent images: delI * Jacobian
-    %     A = delIcol*J;
+
+    for i = 1:length(delIcol)
+        A(i,:) = delIstack(1,:,i)*J(:,:,i);
+    end
     
     % compute Hessian
     H = A'*A;
@@ -93,7 +79,5 @@ while metric_difference>eps
     metric = (norm(delta_p))^2;
     metric_difference = abs(metric-past_metric);
 end
-
-% M = [1+p(1) p(2) p(3); p(4) 1+p(5) p(6); 0 0 1];
 
 end
