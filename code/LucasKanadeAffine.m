@@ -43,7 +43,7 @@ while metric_difference>eps
     %     I_w_crop = I_w(rect(2):rect(4),rect(1):rect(3));
     
     % compute error image
-    bc = T-I_w;%_crop;
+    bc = T-I_w;
     bc_col = reshape(bc,[x*y,1]);
     bc_col(isnan(bc_col))=0;
 
