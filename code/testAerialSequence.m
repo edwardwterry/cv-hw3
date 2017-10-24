@@ -11,7 +11,6 @@ numFrames = size(frames,3);
 mask = zeros(size(frames,1),size(frames,2),size(frames,3));
 for i = 2:numFrames
     mask(:,:,i) = SubtractDominantMotion(frames(:,:,i-1),frames(:,:,i));
-    i
 end
 % save('mask.mat','mask')
 % M = LucasKanadeAffine(It,It1);
